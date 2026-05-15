@@ -1,0 +1,34 @@
+# ── Web Framework ──────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# ── Templating ─────────────────────────────────────────────
+jinja2==3.1.4
+
+# ── Session Middleware ─────────────────────────────────────
+starlette==0.37.2
+itsdangerous==2.2.0
+
+# ── Google OAuth ───────────────────────────────────────────
+authlib==1.3.0
+httpx==0.27.0
+
+# ── Database ───────────────────────────────────────────────
+sqlalchemy>=2.0.36
+
+# ── Environment Variables ──────────────────────────────────
+python-dotenv==1.0.1
+
+# ── File Upload (multipart) ────────────────────────────────
+python-multipart==0.0.9
+
+# ── PDF Parsing ────────────────────────────────────────────
+pdfplumber==0.11.0
+
+# ── NLP ────────────────────────────────────────────────────
+spacy>=3.8.0
+# After installing, also run:
+#   python -m spacy download en_core_web_sm
+
+# ── HTTP Requests (SerpAPI scraper) ────────────────────────
+requests==2.32.2

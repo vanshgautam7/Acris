@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% if success %}Email verified{% else %}Verification failed{% endif %} — ACRIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *   { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:     #0a0c0f;
+      --bg2:    #111418;
+      --border: rgba(255,255,255,0.08);
+      --text:   #f0ede6;
+      --muted:  #8a8a8a;
+      --accent: #c8f0a0;
+      --danger: #f09595;
+      --serif:  'DM Serif Display', serif;
+      --sans:   'DM Sans', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .logo {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      display: block;
+      text-decoration: none;
+    }
+    .logo span { color: var(--accent); }
+
+    .icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.75rem;
+    }
+
+    .icon-wrap.ok {
+      background: rgba(200,240,160,0.1);
+      border: 1px solid rgba(200,240,160,0.2);
+    }
+
+    .icon-wrap.fail {
+      background: rgba(240,149,149,0.1);
+      border: 1px solid rgba(240,149,149,0.2);
+    }
+
+    .icon-wrap svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-wrap.ok  svg { stroke: var(--accent); }
+    .icon-wrap.fail svg { stroke: var(--danger); }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .message {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+      max-width: 340px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--accent);
+      color: #0a0c0f;
+      text-decoration: none;
+      padding: 0.7rem 1.75rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.88rem;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #a8d880; }
+
+    .btn-ghost {
+      display: inline-block;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.14);
+      text-decoration: none;
+      padding: 0.7rem 1.75rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <a href="/" class="logo">AC<span>R</span>IS</a>
+
+  {% if success %}
+
+  <div class="icon-wrap ok">
+    <!-- Checkmark -->
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="8,12 11,15 16,9"/>
+    </svg>
+  </div>
+
+  <h1>You're verified.</h1>
+  <p class="message">{{ message }} You can now sign in and start your career scan.</p>
+  <a href="/login" class="btn-primary">Sign in to ACRIS</a>
+
+  {% else %}
+
+  <div class="icon-wrap fail">
+    <!-- X mark -->
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="15" y1="9" x2="9" y2="15"/>
+      <line x1="9" y1="9" x2="15" y2="15"/>
+    </svg>
+  </div>
+
+  <h1>Verification failed.</h1>
+  <p class="message">{{ message }}</p>
+  <a href="/register" class="btn-ghost">Register again</a>
+
+  {% endif %}
+</div>
+
+</body>
+</html>

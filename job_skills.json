@@ -1,0 +1,242 @@
+{
+"Data Analyst": [
+"python",
+"sql",
+"excel",
+"power bi",
+"tableau",
+"pandas",
+"numpy",
+"data analysis",
+"statistics",
+"data visualization",
+"business intelligence",
+"etl",
+"data cleaning"
+],
+
+"Data Scientist": [
+"python",
+"machine learning",
+"deep learning",
+"tensorflow",
+"pytorch",
+"numpy",
+"pandas",
+"statistics",
+"data mining",
+"nlp",
+"scikit-learn",
+"data modeling",
+"big data"
+],
+
+"Machine Learning Engineer": [
+"python",
+"machine learning",
+"deep learning",
+"tensorflow",
+"pytorch",
+"scikit-learn",
+"nlp",
+"model deployment",
+"docker",
+"kubernetes",
+"mlops"
+],
+
+"Software Engineer": [
+"java",
+"python",
+"c++",
+"data structures",
+"algorithms",
+"system design",
+"git",
+"docker",
+"sql",
+"linux",
+"microservices"
+],
+
+"Frontend Developer": [
+"html",
+"css",
+"javascript",
+"react",
+"angular",
+"vue",
+"typescript",
+"redux",
+"bootstrap",
+"tailwind",
+"ui design"
+],
+
+"Backend Developer": [
+"python",
+"java",
+"node",
+"django",
+"fastapi",
+"spring boot",
+"sql",
+"mongodb",
+"rest api",
+"microservices",
+"docker"
+],
+
+"Full Stack Developer": [
+"html",
+"css",
+"javascript",
+"react",
+"node",
+"python",
+"django",
+"sql",
+"mongodb",
+"rest api",
+"git",
+"docker"
+],
+
+"DevOps Engineer": [
+"docker",
+"kubernetes",
+"aws",
+"azure",
+"gcp",
+"jenkins",
+"terraform",
+"ansible",
+"linux",
+"ci/cd"
+],
+
+"Cloud Engineer": [
+"aws",
+"azure",
+"gcp",
+"docker",
+"kubernetes",
+"terraform",
+"cloud architecture",
+"linux",
+"networking"
+],
+
+"Cybersecurity Analyst": [
+"network security",
+"penetration testing",
+"ethical hacking",
+"siem",
+"firewalls",
+"incident response",
+"vulnerability assessment",
+"security compliance"
+],
+
+"QA Engineer": [
+"manual testing",
+"automation testing",
+"selenium",
+"test cases",
+"bug tracking",
+"performance testing",
+"api testing"
+],
+
+"Business Analyst": [
+"business analysis",
+"requirements gathering",
+"stakeholder management",
+"data analysis",
+"process modeling",
+"sql",
+"documentation"
+],
+
+"Product Manager": [
+"product strategy",
+"product roadmap",
+"user research",
+"agile",
+"scrum",
+"market analysis",
+"stakeholder management"
+],
+
+"Project Manager": [
+"project management",
+"agile",
+"scrum",
+"risk management",
+"resource planning",
+"budgeting",
+"team leadership"
+],
+
+"HR Executive": [
+"recruitment",
+"talent acquisition",
+"employee engagement",
+"hr operations",
+"performance management",
+"interviewing"
+],
+
+"Marketing Manager": [
+"digital marketing",
+"seo",
+"content marketing",
+"social media marketing",
+"email marketing",
+"campaign management"
+],
+
+"Digital Marketing Specialist": [
+"seo",
+"sem",
+"google ads",
+"facebook ads",
+"content marketing",
+"analytics",
+"social media"
+],
+
+"Sales Executive": [
+"lead generation",
+"sales strategy",
+"client relationship",
+"negotiation",
+"crm"
+],
+
+"Finance Analyst": [
+"financial analysis",
+"excel",
+"financial modeling",
+"budgeting",
+"forecasting",
+"accounting"
+],
+
+"Accountant": [
+"accounting",
+"taxation",
+"financial reporting",
+"excel",
+"tally",
+"bookkeeping"
+],
+
+"Operations Manager": [
+"operations management",
+"process improvement",
+"logistics",
+"supply chain",
+"team management"
+]
+}

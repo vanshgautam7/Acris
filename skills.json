@@ -1,0 +1,159 @@
+{
+  "technical_skills": {
+    "programming_languages": [
+      "Python",
+      "Java",
+      "C",
+      "C++",
+      "C#",
+      "JavaScript",
+      "TypeScript",
+      "Go",
+      "Rust",
+      "Kotlin",
+      "Swift",
+      "PHP",
+      "Ruby",
+      "R Programming",
+      "MATLAB"
+    ],
+
+    "database_technologies": [
+      "SQL",
+      "NoSQL",
+      "MySQL",
+      "PostgreSQL",
+      "MongoDB",
+      "Oracle",
+      "Redis",
+      "Database Management"
+    ],
+
+    "software_development": [
+      "Data Structures",
+      "Algorithms",
+      "Object-Oriented Programming",
+      "System Design",
+      "API Development",
+      "RESTful Services",
+      "GraphQL",
+      "Microservices",
+      "Frontend Development",
+      "Backend Development",
+      "Full Stack Development",
+      "Web Development",
+      "Mobile App Development"
+    ],
+
+    "frameworks_and_libraries": [
+      "React",
+      "Angular",
+      "Vue.js",
+      "Node.js",
+      "Django",
+      "Flask",
+      "Spring Boot",
+      "ASP.NET",
+      "HTML",
+      "CSS",
+      "Bootstrap",
+      "Tailwind CSS"
+    ],
+
+    "devops_and_cloud": [
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "Jenkins",
+      "Git",
+      "GitHub",
+      "GitLab",
+      "Linux",
+      "Shell Scripting",
+      "AWS",
+      "Microsoft Azure",
+      "Google Cloud Platform",
+      "Firebase"
+    ],
+
+    "data_science_and_ai": [
+      "Machine Learning",
+      "Deep Learning",
+      "Artificial Intelligence",
+      "Natural Language Processing",
+      "Computer Vision",
+      "TensorFlow",
+      "PyTorch",
+      "Scikit-learn",
+      "Data Analysis",
+      "Data Science",
+      "Big Data",
+      "Hadoop",
+      "Spark",
+      "ETL",
+      "Power BI",
+      "Tableau",
+      "Excel"
+    ]
+  },
+
+  "engineering_skills": {
+    "mechanical": [
+      "Mechanical Design",
+      "AutoCAD",
+      "SolidWorks",
+      "Manufacturing Processes",
+      "Lean Manufacturing",
+      "Quality Assurance"
+    ],
+
+    "electrical": [
+      "Electrical Engineering",
+      "Circuit Design",
+      "PLC Programming",
+      "Robotics",
+      "Control Systems"
+    ]
+  },
+
+  "business_and_management": [
+    "Project Management",
+    "Agile",
+    "Scrum",
+    "Kanban",
+    "Product Management",
+    "Stakeholder Management",
+    "Business Analysis"
+  ],
+
+  "marketing_and_sales": [
+    "Digital Marketing",
+    "SEO",
+    "SEM",
+    "Social Media Marketing",
+    "Email Marketing",
+    "Content Marketing",
+    "CRM"
+  ],
+
+  "design_and_creative": [
+    "UI Design",
+    "UX Design",
+    "Wireframing",
+    "Prototyping",
+    "Figma",
+    "Adobe XD",
+    "Graphic Design",
+    "Adobe Photoshop"
+  ],
+
+  "soft_skills": [
+    "Problem Solving",
+    "Critical Thinking",
+    "Communication Skills",
+    "Leadership",
+    "Teamwork",
+    "Time Management",
+    "Adaptability"
+  ]
+}

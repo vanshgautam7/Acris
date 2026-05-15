@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — ACRIS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/static/style.css?v=5" />
+</head>
+
+<body>
+
+  <div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar fade-in">
+      <div class="sidebar-logo">
+        <a href="/" class="logo"><span>ACRIS</span></a>
+      </div>
+
+      <div class="user-info">
+        <div class="user-avatar">{{ user.name[0].upper() }}</div>
+        <div style="min-width:0;">
+          <div class="name">{{ user.name }}</div>
+          <div class="email">{{ user.email }}</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active"><i class="fa fa-home"></i> Dashboard</a>
+        <a href="#profile-section" class="nav-item"><i class="fa fa-cog"></i> Set Profile</a>
+        <a href="#jobs-section" class="nav-item"><i class="fa fa-briefcase"></i> Jobs</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="theme-row">
+          <span>Theme</span>
+          <button class="theme-toggle" title="Toggle theme"><i class="fa fa-sun-o"></i></button>
+        </div>
+        <a href="/logout" class="btn btn-danger btn-full"><i class="fa fa-sign-out"></i> Logout</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+      <div class="page-header fade-in">
+        <h1>Welcome back, {{ user.name.split(' ')[0] }} </h1>
+        <p>Manage your profile and explore matching jobs</p>
+      </div>
+
+      <!-- ================= PROFILE DISPLAY ================= -->
+      {% if prefs %}
+      <div class="card fade-in">
+        <div class="card-title"><i class="fa fa-id-card"></i> Current Job Profile</div>
+
+        <div class="profile-summary">
+          <div class="summary-item">
+            <div class="key">Role</div>
+            <div class="val">{{ prefs.job_role }}</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="key">Experience</div>
+            <div class="val">{{ prefs.experience_input }}</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="key">Salary</div>
+            <div class="val">{{ prefs.expected_salary }}</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="key">Location</div>
+            <div class="val">{{ prefs.location }}</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="key">Job Type</div>
+            <div class="val">{{ prefs.job_type }}</div>
+          </div>
+
+          <div class="summary-item">
+            <div class="key">Work Mode</div>
+            <div class="val">{{ prefs.work_mode }}</div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ================= SKILLS ================= -->
+      {% if prefs and prefs.filtered_skills %}
+      <div class="card fade-in">
+        <div class="card-title"><i class="fa fa-lightbulb-o"></i> Extracted Skills</div>
+        <div class="skills-container">
+          {% for skill in prefs.filtered_skills %}
+          <span class="tag-badge blue">{{ skill }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- ================= JOB CARDS ================= -->
+      {% if jobs %}
+      <div class="card fade-in" id="jobs-section">
+        <div class="card-title"><i class="fa fa-bullseye"></i> Recommended Jobs</div>
+
+        <div class="jobs-grid">
+          {% for job in jobs %}
+          <div class="job-card">
+
+            <div class="job-title">{{ job.title }}</div>
+
+            <div class="job-meta">
+              {{ job.company }}&nbsp;&nbsp;•&nbsp;&nbsp;<i class="fa fa-map-marker"></i> {{ job.location }}
+            </div>
+
+            <div class="match-score">
+              Match {{ job.match_score }}%
+            </div>
+
+            <div class="job-action">
+              {% if job.link and job.link != '#' %}
+              <a href="{{ job.link }}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                View Job →
+              </a>
+              {% else %}
+              <span style="color: var(--text3); font-size:0.8rem;">Link unavailable</span>
+              {% endif %}
+            </div>
+
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state fade-in" id="jobs-section">
+        <div class="empty-icon"><i class="fa fa-briefcase"></i></div>
+        <h3>No jobs yet</h3>
+        <p>Submit your profile below to get AI-powered job recommendations matched to your skills.</p>
+      </div>
+      {% endif %}
+
+      <!-- ================= SECTION DIVIDER ================= -->
+      <div class="section-divider fade-in">Set up your profile</div>
+
+      <!-- ================= USER INPUT FORM ================= -->
+      <form method="POST" action="/submit-profile" enctype="multipart/form-data" id="profile-section">
+
+        <!-- RESUME -->
+        <div class="card fade-in">
+          <div class="card-title"><i class="fa fa-file-text"></i> Upload Resume</div>
+
+          <div class="upload-zone" onclick="document.getElementById('resume-input').click()">
+            <div style="font-size:2.5rem; margin-bottom:0.6rem;"><i class="fa fa-cloud-upload"></i></div>
+            <div style="font-weight:600; margin-bottom:0.3rem; color:var(--text);">Click to upload your resume</div>
+            <div style="font-size:0.82rem; color:var(--text3);">PDF format supported • Max 5MB</div>
+            <input type="file" id="resume-input" name="resume" accept=".pdf" hidden
+              onchange="document.getElementById('file-name').textContent = this.files[0]?.name || ''">
+          </div>
+          <div id="file-name" style="margin-top:0.8rem; font-size:0.82rem; color:var(--green); font-weight:500;"></div>
+        </div>
+
+        <!-- PREFERENCES -->
+        <div class="card fade-in">
+          <div class="card-title"><i class="fa fa-sliders"></i> Job Preferences</div>
+
+          <div class="form-row">
+            <!-- JOB ROLE -->
+            <div class="form-group">
+              <label>Job Role</label>
+              <select name="job_role" class="form-control" required>
+                <option>Data Analyst</option>
+                <option>Software Engineer</option>
+                <option>Data Scientist</option>
+                <option>ML Engineer</option>
+                <option>Business Analyst</option>
+                <option>Product Manager</option>
+                <option>Frontend Developer</option>
+                <option>Backend Developer</option>
+                <option>Full Stack Developer</option>
+                <option>DevOps Engineer</option>
+                <option>Cloud Engineer</option>
+                <option>QA Engineer</option>
+                <option>HR Executive</option>
+                <option>Marketing Manager</option>
+                <option>Sales Executive</option>
+              </select>
+            </div>
+
+            <!-- EXPERIENCE -->
+            <div class="form-group">
+              <label>Experience</label>
+              <select name="experience" class="form-control">
+                <option>Fresher</option>
+                <option>0-1 years</option>
+                <option>1-3 years</option>
+                <option>3-5 years</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- SALARY -->
+            <div class="form-group">
+              <label>Expected Salary</label>
+              <select name="expected_salary" class="form-control">
+                <option>3-5 LPA</option>
+                <option>5-7 LPA</option>
+                <option>7-10 LPA</option>
+                <option>10-15 LPA</option>
+                <option>15+ LPA</option>
+              </select>
+            </div>
+
+            <!-- LOCATION -->
+            <div class="form-group">
+              <label>Location</label>
+              <select name="location" class="form-control">
+                <option>Bangalore</option>
+                <option>Hyderabad</option>
+                <option>Pune</option>
+                <option>Mumbai</option>
+                <option>Delhi</option>
+                <option>Gurgaon</option>
+                <option>Noida</option>
+                <option>Chennai</option>
+                <option>Ahmedabad</option>
+                <option>Jaipur</option>
+                <option>Chandigarh</option>
+                <option>Indore</option>
+                <option>Lucknow</option>
+                <option>Coimbatore</option>
+                <option>Bhubaneswar</option>
+                <option>Nagpur</option>
+                <option>Surat</option>
+                <option>Visakhapatnam</option>
+                <option>Work From Home</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <!-- JOB TYPE -->
+            <div class="form-group">
+              <label>Job Type</label>
+              <select name="job_type" class="form-control">
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Internship</option>
+                <option>Contract</option>
+              </select>
+            </div>
+
+            <!-- WORK MODE -->
+            <div class="form-group">
+              <label>Work Mode</label>
+              <select name="work_mode" class="form-control">
+                <option>Remote</option>
+                <option>Hybrid</option>
+                <option>Onsite</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-success btn-lg btn-full" style="margin-top:0.5rem;">
+            <i class="fa fa-rocket"></i> Submit Profile
+          </button>
+
+        </div>
+
+      </form>
+
+    </main>
+
+  </div>
+
+  <script src="/static/theme.js"></script>
+</body>
+
+</html>

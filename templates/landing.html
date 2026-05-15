@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACRIS — Autonomous Career Intelligence System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0c0f;
+      --bg2: #111418;
+      --bg3: #181c22;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0ede6;
+      --muted: #8a8a8a;
+      --accent: #c8f0a0;
+      --accent2: #a8d880;
+      --serif: 'DM Serif Display', serif;
+      --sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10,12,15,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      background: var(--accent);
+      color: #0a0c0f;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--accent2); }
+
+    .nav-btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 0.85rem;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .nav-btn-ghost:hover {
+      border-color: var(--muted);
+      color: var(--text);
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 6rem 2.5rem 5rem;
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(200,240,160,0.1);
+      border: 1px solid rgba(200,240,160,0.25);
+      color: var(--accent);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+    }
+
+    .badge-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0c0f;
+      border: none;
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      padding: 0.75rem 1.75rem;
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--muted);
+      color: var(--text);
+    }
+
+    .patent-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 1.75rem;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin: 4rem auto;
+      max-width: 700px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 1.8rem;
+      color: var(--text);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      padding: 4rem 2.5rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 3rem;
+    }
+
+    /* ── STEPS ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .step {
+      background: var(--bg2);
+      padding: 2rem 1.75rem;
+    }
+
+    .step-num {
+      font-family: var(--serif);
+      font-size: 2.5rem;
+      color: rgba(200,240,160,0.15);
+      line-height: 1;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .step-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(200,240,160,0.1);
+      border: 1px solid rgba(200,240,160,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 16px;
+    }
+
+    .step h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: var(--border2); }
+
+    .feature-card.wide {
+      grid-column: span 2;
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(200,240,160,0.08);
+      border: 1px solid rgba(200,240,160,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-bottom: 1rem;
+      flex-shrink: 0;
+    }
+
+    .feature-card.wide .feature-icon { margin-bottom: 0; }
+
+    .feature-card h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── TECH STACK ── */
+    .stack-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .chip {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 5rem 2.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: var(--serif);
+      font-size: 2.2rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .cta-section p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 2.5rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .footer-copy {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 4rem 1.5rem 3rem; }
+      .stats { flex-direction: column; max-width: 340px; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .steps { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .feature-card.wide { grid-column: span 1; flex-direction: column; gap: 1rem; }
+      .section { padding: 3rem 1.5rem; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">AC<span>R</span>IS</a>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stack">Tech stack</a></li>
+  </ul>
+  <div class="nav-actions">
+    {% if user %}
+    <a href="/dashboard.html" class="nav-cta">Dashboard</a>
+    <a href="/logout" class="nav-btn-ghost">Logout</a>
+    {% else %}
+    <a href="/register" class="nav-cta">Get started</a>
+    {% endif %}
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">
+    <div class="badge-dot"></div>
+    Patent filed — LPU IPR Cell &middot; #202611038384
+  </div>
+
+  <h1>Your career,<br><em>intelligently</em> automated.</h1>
+
+  <p class="hero-sub">
+    ACRIS parses your resume, extracts your skills, and generates targeted job search queries across LinkedIn, Indeed, and Naukri — in under two seconds.
+  </p>
+
+  <div class="hero-actions">
+    {% if user %}
+    <a href="/dashboard.html" class="btn-primary">Go to Dashboard</a>
+    {% else %}
+    <a href="/register" class="btn-primary">Start career scan</a>
+    <a href="/login" class="btn-ghost">Sign in</a>
+    {% endif %}
+  </div>
+
+  <div class="patent-tag">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.5">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    Patent Application No. 202611038384 — Autonomous Career Intelligence System
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <span class="stat-num">86.6%</span>
+    <span class="stat-label">Avg skill recall</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">1.8s</span>
+    <span class="stat-label">Processing time</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">21</span>
+    <span class="stat-label">Job role mappings</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">146</span>
+    <span class="stat-label">Skill taxonomy</span>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how-it-works">
+  <p class="section-label">How it works</p>
+  <h2 class="section-title">Three steps from resume to results</h2>
+
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <div class="step-icon">📄</div>
+      <h3>Upload your resume</h3>
+      <p>Drop your PDF resume. pdfplumber extracts and cleans all text content automatically — no formatting needed.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div class="step-icon">🧠</div>
+      <h3>Skills are extracted</h3>
+      <p>A four-pass NLP engine using spaCy PhraseMatcher and rule-based fallbacks identifies every skill in your resume.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div class="step-icon">🔗</div>
+      <h3>Queries are generated</h3>
+      <p>Role-filtered skills become optimised search URLs for LinkedIn, Indeed, and Naukri — ready to click.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <p class="section-label">Features</p>
+  <h2 class="section-title">Built for candidates, not recruiters</h2>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Hybrid skill extraction</h3>
+      <p>Combines spaCy phrase matching with exact, token-based, and joined-word detection to catch every skill regardless of how it's written.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>Role-aware filtering</h3>
+      <p>Extracted skills are filtered against 21 job-role mappings so your queries only include what employers actually look for.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Live job matching</h3>
+      <p>Real job listings fetched via SerpAPI and ranked by a match score calculated from your role and filtered skill set.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <h3>Email notifications</h3>
+      <p>n8n workflow automation delivers matched job listings to your inbox whenever your profile is updated or jobs are refreshed.</p>
+    </div>
+    <div class="feature-card wide">
+      <div class="feature-icon">🔐</div>
+      <div>
+        <h3>Secure by default</h3>
+        <p>Google OAuth 2.0 login, bcrypt password hashing, session-based auth, and parameterised SQL queries on every database call. Your data stays yours.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section class="section" id="stack">
+  <p class="section-label">Tech stack</p>
+  <h2 class="section-title">Open source, end to end</h2>
+  <p style="color: var(--muted); font-size: 0.88rem; max-width: 480px;">Built on Python and FastAPI with a modular pipeline architecture that supports progressive extension across future phases.</p>
+
+  <div class="stack-chips">
+    <span class="chip">Python 3</span>
+    <span class="chip">FastAPI</span>
+    <span class="chip">spaCy</span>
+    <span class="chip">pdfplumber</span>
+    <span class="chip">SQLAlchemy</span>
+    <span class="chip">SQLite</span>
+    <span class="chip">SerpAPI</span>
+    <span class="chip">n8n</span>
+    <span class="chip">Google OAuth 2.0</span>
+    <span class="chip">APScheduler</span>
+    <span class="chip">Jinja2</span>
+    <span class="chip">Uvicorn</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section">
+  {% if user %}
+  <h2>Welcome back to ACRIS</h2>
+  <p>Head to your dashboard to check your latest matches and career insights.</p>
+  <a href="/dashboard.html" class="btn-primary">Open Dashboard</a>
+  {% else %}
+  <h2>Ready to scan your career?</h2>
+  <p>Upload your resume and get platform-ready job queries in under two seconds.</p>
+  <a href="/register" class="btn-primary">Create free account</a>
+  {% endif %}
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">AC<span>R</span>IS</a>
+  <ul class="footer-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#stack">Tech stack</a></li>
+    <li><a href="/login">Sign in</a></li>
+  </ul>
+  <span class="footer-copy">&copy; 2026 ACRIS &mdash; LPU MCA Project</span>
+</footer>
+
+</body>
+</html>

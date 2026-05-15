@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify your email — ACRIS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *   { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --bg:     #0a0c0f;
+      --bg2:    #111418;
+      --border: rgba(255,255,255,0.08);
+      --text:   #f0ede6;
+      --muted:  #8a8a8a;
+      --accent: #c8f0a0;
+      --serif:  'DM Serif Display', serif;
+      --sans:   'DM Sans', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .icon-wrap {
+      width: 64px;
+      height: 64px;
+      background: rgba(200,240,160,0.1);
+      border: 1px solid rgba(200,240,160,0.2);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.75rem;
+    }
+
+    .icon-wrap svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--accent);
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .logo {
+      font-family: var(--serif);
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      display: block;
+    }
+    .logo span { color: var(--accent); }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: 1.75rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      line-height: 1.2;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .email-pill {
+      display: inline-block;
+      background: rgba(200,240,160,0.08);
+      border: 1px solid rgba(200,240,160,0.2);
+      color: var(--accent);
+      font-size: 0.82rem;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 2rem;
+      word-break: break-all;
+    }
+
+    .steps {
+      text-align: left;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-item:last-child { border-bottom: none; }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      background: rgba(200,240,160,0.1);
+      border: 1px solid rgba(200,240,160,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      color: var(--accent);
+      font-weight: 500;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .step-text strong { color: var(--text); font-weight: 500; }
+
+    .btn-ghost {
+      display: inline-block;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      font-family: var(--sans);
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+    .note {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .note a { color: var(--accent); text-decoration: none; }
+    .note a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <a href="/" class="logo">AC<span>R</span>IS</a>
+
+  <div class="icon-wrap">
+    <!-- Envelope icon -->
+    <svg viewBox="0 0 24 24">
+      <rect x="2" y="4" width="20" height="16" rx="2"/>
+      <polyline points="2,4 12,13 22,4"/>
+    </svg>
+  </div>
+
+  <h1>Check your inbox</h1>
+
+  <p class="sub">
+    We sent a verification link to your Gmail address. Click the link in
+    the email to activate your ACRIS account.
+  </p>
+
+  {% if email %}
+  <div class="email-pill">{{ email }}</div>
+  {% endif %}
+
+  <div class="steps">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        Open <strong>Gmail</strong> and look for an email from ACRIS.
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        Click <strong>"Verify my email"</strong> inside the email.
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        Once verified, <strong>sign in</strong> to access your dashboard.
+      </div>
+    </div>
+  </div>
+
+  <a href="/login" class="btn-ghost">Go to sign in</a>
+
+  <p class="note">
+    Didn't receive the email? Check your spam folder.<br/>
+    Still nothing? <a href="/register">Register again</a> or contact support.
+  </p>
+</div>
+
+</body>
+</html>
