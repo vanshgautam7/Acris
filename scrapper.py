@@ -1,13 +1,15 @@
 import requests
 import os
+import logging
 from dotenv import load_dotenv
 
+logger = logging.getLogger("acris.scrapper")
 load_dotenv()
 
 
 def scrape_google_jobs(query, location):
 
-    print("\n[SEARCH] Fetching jobs (SerpAPI):", query, location)
+    logger.info(f"Fetching jobs (SerpAPI): {query} {location}")
 
     jobs = []
 
@@ -26,7 +28,7 @@ def scrape_google_jobs(query, location):
     try:
         response = requests.get(url, params=params, timeout=10)
 
-        print("API Status:", response.status_code)
+        logger.debug(f"API Status: {response.status_code}")
 
         data = response.json()
 
@@ -38,7 +40,6 @@ def scrape_google_jobs(query, location):
 
             title = job.get("title", "").lower()
 
-            # Filter relevant jobs only
             if any(word in title for word in role_words):
 
                 link = extract_best_link(job)
@@ -53,10 +54,10 @@ def scrape_google_jobs(query, location):
             if len(jobs) >= 10:
                 break
 
-        print(f"[OK] Jobs fetched: {len(jobs)}")
+        logger.info(f"Jobs fetched: {len(jobs)}")
 
     except Exception as e:
-        print("[ERROR] API Error:", e)
+        logger.error(f"API Error: {e}")
 
     return jobs
 

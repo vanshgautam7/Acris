@@ -8,11 +8,9 @@ class UserProfile(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    # User Info
     name = Column(String)
     email = Column(String, index=True)
 
-    # Preferences
     job_role = Column(String)
     experience_input = Column(String)
     experience_parsed = Column(String)
@@ -22,14 +20,11 @@ class UserProfile(Base):
     job_type = Column(String)
     work_mode = Column(String)
 
-    # Resume
     resume_path = Column(String)
 
-    # Skills
     all_skills = Column(Text)
     filtered_skills = Column(Text)
 
-    # Queries
     queries = Column(Text)
 
 
@@ -54,11 +49,9 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
 
-    # ── Email verification ──────────────────────────────────
     is_verified        = Column(Boolean,  default=False,  nullable=False)
     verify_token       = Column(String,   nullable=True)   # UUID token sent in email
     verify_token_expiry= Column(DateTime, nullable=True)   # token valid for 24 h
-    # ────────────────────────────────────────────────────────
 
 class Application(Base):
     __tablename__ = "applications"

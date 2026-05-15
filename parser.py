@@ -3,12 +3,13 @@ import re
 import pdfplumber
 from pathlib import Path
 import spacy
+import logging
 
-# ---------------- LOAD SPACY ---------------- #
+logger = logging.getLogger("acris.parser")
+
 nlp = spacy.load("en_core_web_sm")
 
 
-# ---------------- LOAD SKILLS DB ---------------- #
 skills_path = Path("skills.json")
 
 with open(skills_path, "r") as f:
@@ -35,7 +36,6 @@ def flatten_skills(data):
 SKILLS_DB = flatten_skills(raw_data)
 
 
-# ---------------- EXTRACT TEXT ---------------- #
 def extract_text_from_pdf(pdf_path):
     text = ""
 
@@ -46,12 +46,11 @@ def extract_text_from_pdf(pdf_path):
                 if page_text:
                     text += page_text + " "
     except Exception as e:
-        print("PDF reading error:", e)
+        logger.error(f"PDF reading error: {e}")
 
     return text
 
 
-# ---------------- CLEAN TEXT ---------------- #
 def clean_text(text):
     text = text.lower()
     text = re.sub(r'([a-z])\s+([a-z])', r'\1\2', text)
@@ -60,7 +59,6 @@ def clean_text(text):
     return text.strip()
 
 
-# ---------------- SKILL EXTRACTION ---------------- #
 def extract_skills(text):
 
     cleaned_text = clean_text(text)
@@ -92,7 +90,6 @@ def extract_skills(text):
     return sorted(list(set(skills_found)))
 
 
-# ---------------- EXPERIENCE EXTRACTION ---------------- #
 def extract_experience(text):
 
     text = text.lower()
@@ -105,7 +102,6 @@ def extract_experience(text):
     return "Not found"
 
 
-# ---------------- FILTER SKILLS ---------------- #
 def select_relevant_skills(job_role, resume_skills):
 
     with open("job_skills.json") as f:
@@ -130,31 +126,27 @@ def select_relevant_skills(job_role, resume_skills):
     return filtered
 
 
-# ---------------- MAIN PARSER ---------------- #
 def parse_resume(file_path, job_role=None):
 
     text = extract_text_from_pdf(file_path)
 
     extracted_skills = extract_skills(text)
 
-    print("\n=========== EXTRACTED SKILLS (ALL) ===========")
-    print(extracted_skills)
+    logger.debug("Extracted skills (all): %s", extracted_skills)
 
     filtered_skills = []
 
     if job_role:
         filtered_skills = select_relevant_skills(job_role, extracted_skills)
 
-        print("\n=========== FILTERED SKILLS (JOB MATCH) ===========")
-        print(filtered_skills)
+        logger.debug("Filtered skills (job match): %s", filtered_skills)
 
     experience = extract_experience(text)
 
-    print("\n=========== EXPERIENCE (PARSED) ===========")
-    print(experience)
+    logger.debug("Parsed experience: %s", experience)
 
     return {
         "all_skills": extracted_skills,
         "filtered_skills": filtered_skills,
-        "experience": experience   # ✅ IMPORTANT FIX
+        "experience": experience
     }

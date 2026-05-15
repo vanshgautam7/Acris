@@ -1,8 +1,3 @@
-"""
-ACRIS Backend - Refactored with Proper FastAPI Structure
-Uses: Dependency Injection, Router-based organization, SQLAlchemy ORM
-"""
-
 import shutil
 import os
 import json
@@ -25,7 +20,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dotenv import load_dotenv
 
-# Internal imports
 from parser import parse_resume
 from query_generator import generate_job_queries
 from scrapper import scrape_google_jobs
@@ -33,7 +27,7 @@ from database import engine, SessionLocal
 from models import Base, UserProfile, Job, User, Application
 from auth import validate_name, validate_gmail, generate_verify_token, send_verification_email
 
-# ─────────────── ENVIRONMENT & CONFIG ─────────────── #
+# --- Config ---
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 UPLOAD_DIR = BASE_DIR / "uploads"
@@ -46,11 +40,11 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 N8N_NEW_PROFILE_WEBHOOK = "http://localhost:5678/webhook/new-profile"
 N8N_APPLY_JOB_WEBHOOK = "http://localhost:5678/webhook/apply-job"
 
-# ─────────────── LOGGING ─────────────── #
+# --- Logging ---
 logger = logging.getLogger("acris")
 logging.basicConfig(level=logging.INFO)
 
-# ─────────────── DATABASE DEPENDENCY ─────────────── #
+# --- Database ---
 def get_db():
     """Dependency for FastAPI to inject DB session."""
     db = SessionLocal()
@@ -59,15 +53,15 @@ def get_db():
     finally:
         db.close()
 
-# ─────────────── BACKGROUND JOBS ─────────────── #
+# --- Background Jobs ---
 def auto_fetch_jobs_task():
     """Background task: Fetch jobs for all users every 6 hours."""
-    logger.info("🔄 Auto-fetch jobs task started...")
+    logger.info("Auto-fetch jobs task started...")
     db = SessionLocal()
     try:
         users = db.query(UserProfile).all()
         if not users:
-            logger.info("ℹ No user profiles found")
+            logger.info("No user profiles found")
             return
         
         for user in users:
@@ -102,16 +96,16 @@ def auto_fetch_jobs_task():
                         user_email=user.email
                     ))
                 db.commit()
-                logger.info(f"✅ Updated {len(unique_jobs[:10])} jobs for {user.email}")
+                logger.info(f"Updated {len(unique_jobs[:10])} jobs for {user.email}")
             except Exception as e:
-                logger.error(f"❌ Failed for {user.email}: {e}")
+                logger.error(f"Failed for {user.email}: {e}")
                 db.rollback()
     except Exception as e:
-        logger.error(f"❌ Auto-fetch failed: {e}")
+        logger.error(f"Auto-fetch failed: {e}")
     finally:
         db.close()
 
-# ─────────────── SCHEDULER SETUP ─────────────── #
+# --- Scheduler ---
 scheduler = BackgroundScheduler()
 
 def start_n8n():
@@ -144,10 +138,8 @@ def start_n8n():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # ── Start n8n automatically ──
     start_n8n()
 
-    # ── Start APScheduler ──
     scheduler.add_job(
         auto_fetch_jobs_task,
         trigger=IntervalTrigger(hours=6),
@@ -156,26 +148,22 @@ async def lifespan(app: FastAPI):
         replace_existing=True,
     )
     scheduler.start()
-    logger.info("✅ Background scheduler started (auto-fetch every 6 hours)")
+    logger.info("Background scheduler started (auto-fetch every 6 hours)")
     yield
     scheduler.shutdown(wait=False)
     logger.info("✅ Background scheduler stopped")
 
-# ─────────────── FASTAPI APP ─────────────── #
+# --- FastAPI App ---
 app = FastAPI(lifespan=lifespan)
 Base.metadata.create_all(bind=engine)
 
-# Middleware
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
-# Static files
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 app.mount("/uploads", StaticFiles(directory=str(BASE_DIR / "uploads")), name="uploads")
 
-# Templates
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
-# Google OAuth
 oauth = OAuth()
 oauth.register(
     name='google',
@@ -185,7 +173,7 @@ oauth.register(
     client_kwargs={'scope': 'openid email profile'}
 )
 
-# ─────────────── UTILITIES ─────────────── #
+# --- Utilities ---
 def get_current_user(request: Request):
     """Dependency: Get current user from session."""
     if "user" not in request.session:
@@ -215,28 +203,21 @@ def calculate_match_score(job_title: str, job_role: str, user_skills: set) -> in
     
     return min(100, role_score + skill_score)
 
-# ═══════════════════════════════════════════════════════════
-# ROUTES — Public Pages
-# ═══════════════════════════════════════════════════════════
+# --- Public Pages ---
 
 @app.get("/", response_class=HTMLResponse)
 async def landing(request: Request):
-    """Landing page."""
     return templates.TemplateResponse(request, "landing.html", {})
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    """Login page."""
     return templates.TemplateResponse(request, "login.html", {"error": None})
 
 @app.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request):
-    """Register page."""
     return templates.TemplateResponse(request, "register.html", {"error": None})
 
-# ═══════════════════════════════════════════════════════════
-# ROUTES — Authentication
-# ═══════════════════════════════════════════════════════════
+# --- Authentication ---
 
 @app.post("/register", response_class=HTMLResponse)
 async def register_post(
@@ -245,8 +226,6 @@ async def register_post(
     email:    str = Form(...),
     password: str = Form(...)
 ):
-    """Register new user (email/password) with email verification."""
-    # ── 1. Name validation ──────────────────────────────────
     name_ok, name_err = validate_name(name)
     if not name_ok:
         return templates.TemplateResponse(
@@ -255,7 +234,6 @@ async def register_post(
             status_code=400
         )
 
-    # ── 2. Gmail validation ─────────────────────────────────
     email_ok, email_err = validate_gmail(email)
     if not email_ok:
         return templates.TemplateResponse(
@@ -264,7 +242,6 @@ async def register_post(
             status_code=400
         )
 
-    # ── 3. Password length ──────────────────────────────────
     if len(password) < 8:
         return templates.TemplateResponse(
             request, "register.html",
@@ -272,7 +249,6 @@ async def register_post(
             status_code=400
         )
 
-    # ── 4. Duplicate check ──────────────────────────────────
     db = SessionLocal()
     existing = db.query(User).filter(User.email == email.strip().lower()).first()
     if existing:
@@ -283,7 +259,6 @@ async def register_post(
             status_code=400
         )
 
-    # ── 5. Create unverified user ───────────────────────────
     token, expiry      = generate_verify_token()
     password_hash      = hashlib.sha256(password.encode()).hexdigest()
 
@@ -299,7 +274,6 @@ async def register_post(
     db.commit()
     db.close()
 
-    # ── 6. Send verification email ──────────────────────────
     sent = send_verification_email(
         to_email = email.strip().lower(),
         name     = name.strip(),
@@ -309,21 +283,17 @@ async def register_post(
     if not sent:
         logger.warning(f"Verification email NOT sent for {email} — check SMTP config.")
 
-    # ── 7. Redirect to "check your inbox" page ──────────────
     return RedirectResponse(
         f"/verify-pending?email={email.strip().lower()}",
         status_code=303
     )
 
-
-# ---------------- VERIFY PENDING (info page) ---------------- #
 @app.get("/verify-pending", response_class=HTMLResponse)
 async def verify_pending(request: Request, email: str = ""):
     return templates.TemplateResponse(
         request, "verify.html",
         {"email": email}
     )
-
 
 # ---------------- VERIFY EMAIL (link from email) ---------------- #
 @app.get("/verify-email", response_class=HTMLResponse)
@@ -338,7 +308,6 @@ async def verify_email(request: Request, token: str = ""):
     db   = SessionLocal()
     user = db.query(User).filter(User.verify_token == token).first()
 
-    # ── Token not found ──
     if not user:
         db.close()
         return templates.TemplateResponse(
@@ -349,7 +318,6 @@ async def verify_email(request: Request, token: str = ""):
             }
         )
 
-    # ── Token expired ──
     if user.verify_token_expiry and datetime.now() > user.verify_token_expiry:
         db.close()
         return templates.TemplateResponse(
@@ -360,12 +328,10 @@ async def verify_email(request: Request, token: str = ""):
             }
         )
 
-    # ── Already verified ──
     if user.is_verified:
         db.close()
         return RedirectResponse("/login", status_code=303)
 
-    # ── Activate account ──
     user.is_verified         = True
     user.verify_token        = None
     user.verify_token_expiry = None
@@ -391,10 +357,9 @@ async def verify_email(request: Request, token: str = ""):
 async def login_post(
     request: Request,
     email: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db)
+    password: str = Form(...)
 ):
-    """Login with email/password."""
+    db = next(get_db())
     password_hash = hashlib.sha256(password.encode()).hexdigest()
     user = db.query(User).filter(
         User.email == email,
@@ -408,7 +373,6 @@ async def login_post(
             status_code=400
         )
     
-    # Block unverified users
     if not user.is_verified:
         return templates.TemplateResponse(
             request, "login.html",
@@ -422,13 +386,11 @@ async def login_post(
 
 @app.get("/auth/google")
 async def auth_google(request: Request):
-    """Initiate Google OAuth login."""
     redirect_uri = request.url_for('auth_google_callback')
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @app.get("/auth/google/callback")
 async def auth_google_callback(request: Request):
-    """Google OAuth callback."""
     token = await oauth.google.authorize_access_token(request)
     user = token.get("userinfo")
     request.session["user"] = {
@@ -439,13 +401,10 @@ async def auth_google_callback(request: Request):
 
 @app.get("/logout")
 async def logout(request: Request):
-    """Logout user."""
     request.session.clear()
     return RedirectResponse("/", status_code=303)
 
-# ═══════════════════════════════════════════════════════════
-# ROUTES — Dashboard & Profile
-# ═══════════════════════════════════════════════════════════
+# --- Dashboard & Profile ---
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def home(
@@ -453,7 +412,6 @@ async def home(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Main dashboard."""
     user_data = db.query(UserProfile)\
         .filter(UserProfile.email == user["email"])\
         .order_by(UserProfile.id.desc())\
@@ -503,7 +461,6 @@ async def submit_profile(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Submit user profile and resume."""
     resume_path = None
     all_skills = []
     filtered_skills = []
@@ -520,14 +477,11 @@ async def submit_profile(
     if not filtered_skills:
         filtered_skills = all_skills[:3]
     
-    # Fetch jobs
     jobs = scrape_google_jobs(job_role, location)
     
-    # Clear old profile & jobs
     db.query(Job).filter(Job.user_email == user["email"]).delete()
     db.query(UserProfile).filter(UserProfile.email == user["email"]).delete()
     
-    # Save new profile
     db_user = UserProfile(
         name=user["name"],
         email=user["email"],
@@ -578,13 +532,11 @@ async def submit_profile(
         )
         logger.info(f"✅ n8n webhook triggered for {user['email']}")
     except Exception as e:
-        logger.error(f"❌ n8n webhook failed: {e}")
+        logger.error(f"n8n webhook failed: {e}")
     
     return RedirectResponse("/dashboard", status_code=303)
 
-# ═══════════════════════════════════════════════════════════
-# ROUTES — Applications & Job Tracking
-# ═══════════════════════════════════════════════════════════
+# --- Applications & Job Tracking ---
 
 @app.get("/track-apply")
 async def track_apply(
@@ -595,7 +547,6 @@ async def track_apply(
     job_link: str,
     db: Session = Depends(get_db)
 ):
-    """Track job click and redirect to portal."""
     job_title = unquote(job_title)
     company = unquote(company)
     job_link = unquote(job_link)
@@ -617,7 +568,7 @@ async def track_apply(
         )
         db.add(application)
         db.commit()
-        logger.info(f"✅ Job tracked: {email} → {job_title}")
+        logger.info(f"Job tracked: {email} → {job_title}")
     
     return RedirectResponse(job_link, status_code=302)
 
@@ -627,7 +578,6 @@ async def apply_job(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Apply to job from dashboard."""
     data = await request.json()
     job_title = data.get("job_title")
     company = data.get("company")
@@ -654,7 +604,6 @@ async def apply_job(
     db.commit()
     app_id = application.id
     
-    # Trigger n8n
     try:
         httpx.post(
             N8N_APPLY_JOB_WEBHOOK,
@@ -669,7 +618,7 @@ async def apply_job(
             timeout=5.0
         )
     except Exception as e:
-        logger.error(f"❌ n8n webhook failed: {e}")
+        logger.error(f"n8n webhook failed: {e}")
     
     return JSONResponse({"status": "success"})
 
@@ -679,7 +628,6 @@ async def mark_applied(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Mark application as applied."""
     data = await request.json()
     app_id = data.get("app_id")
     
@@ -702,7 +650,6 @@ async def update_application_status(
     request: Request,
     db: Session = Depends(get_db)
 ):
-    """Update application status (from n8n)."""
     data = await request.json()
     
     application = db.query(Application).filter(
@@ -726,7 +673,6 @@ async def my_applications(
     user = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    """Get all user applications."""
     applications = db.query(Application)\
         .filter(Application.user_email == user["email"])\
         .order_by(Application.applied_at.desc())\
@@ -750,11 +696,10 @@ async def my_applications(
 
 @app.get("/auto-fetch-jobs")
 async def auto_fetch_jobs_endpoint(db: Session = Depends(get_db)):
-    """Manual trigger for auto-fetch."""
     auto_fetch_jobs_task()
     return {"status": "jobs updated"}
 
-# ─────────────── Server startup ─────────────── #
+# --- Server Startup ---
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)

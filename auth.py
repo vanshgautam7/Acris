@@ -1,19 +1,6 @@
 """
-auth.py — ACRIS validation and email-verification helpers
-==========================================================
-
-Responsibilities
-----------------
-1. validate_name(name)         – blocks numbers, symbols, very short strings
-2. validate_gmail(email)       – only @gmail.com + MX DNS check on the domain
-3. generate_verify_token()     – cryptographically secure URL-safe token
-4. send_verification_email()   – sends HTML email via Gmail SMTP (App Password)
-
-Environment variables required (.env)
---------------------------------------
-GMAIL_SENDER      = acris.jobs.portal@gmail.com
-GMAIL_APP_PASSWORD=        ← 16-char Google App Password
-BASE_URL          = http://localhost:8001      ← or your deployed domain
+auth.py — Validation and email-verification helpers.
+Requires GMAIL_SENDER, GMAIL_APP_PASSWORD, and BASE_URL in environment.
 """
 
 import os
@@ -30,9 +17,7 @@ from email.mime.text import MIMEText
 logger = logging.getLogger("acris.auth")
 
 
-# ─────────────────────────────────────────────────────────────
-# 1. NAME VALIDATION
-# ─────────────────────────────────────────────────────────────
+# --- Name Validation ---
 
 def validate_name(name: str) -> tuple[bool, str]:
     """
@@ -64,20 +49,11 @@ def validate_name(name: str) -> tuple[bool, str]:
     return True, ""
 
 
-# ─────────────────────────────────────────────────────────────
-# 2. GMAIL VALIDATION
-# ─────────────────────────────────────────────────────────────
+# --- Gmail Validation ---
 
-# Compiled once at import time for speed
 _EMAIL_RE = re.compile(
     r"^[a-zA-Z0-9][a-zA-Z0-9._+\-]{4,28}[a-zA-Z0-9]@gmail\.com$"
 )
-# Gmail local-part rules:
-#   - 6–30 characters total (we check 6+ above with the anchors + {4,28})
-#   - Only letters, digits, dots, underscores, hyphens, plus signs
-#   - Cannot start or end with a dot (regex above covers start; dot-at-end
-#     would require the last char to be alphanumeric — covered by [a-zA-Z0-9]$)
-#   - We normalise to lowercase before matching
 
 _ALLOWED_DOMAIN = "gmail.com"
 
@@ -104,11 +80,9 @@ def validate_gmail(email: str) -> tuple[bool, str]:
     """
     email = email.strip().lower()
 
-    # ── Must be @gmail.com ──
     if not email.endswith("@gmail.com"):
         return False, "Only Gmail addresses (@gmail.com) are accepted."
 
-    # ── Regex format check ──
     if not _EMAIL_RE.match(email):
         return (
             False,
@@ -117,12 +91,10 @@ def validate_gmail(email: str) -> tuple[bool, str]:
             "letters, numbers, dots, underscores, or hyphens."
         )
 
-    # ── Consecutive dots check (Gmail forbids them) ──
     local = email.split("@")[0]
     if ".." in local:
         return False, "Gmail addresses cannot contain consecutive dots."
 
-    # ── MX record check ──
     if not _mx_exists(_ALLOWED_DOMAIN):
         # If DNS itself is down, don't block registration — log and continue
         logger.warning("MX lookup for gmail.com failed — skipping DNS check.")
@@ -130,9 +102,7 @@ def validate_gmail(email: str) -> tuple[bool, str]:
     return True, ""
 
 
-# ─────────────────────────────────────────────────────────────
-# 3. TOKEN GENERATION
-# ─────────────────────────────────────────────────────────────
+# --- Token Generation ---
 
 def generate_verify_token() -> tuple[str, datetime]:
     """
@@ -145,9 +115,7 @@ def generate_verify_token() -> tuple[str, datetime]:
     return token, expiry
 
 
-# ─────────────────────────────────────────────────────────────
-# 4. SEND VERIFICATION EMAIL
-# ─────────────────────────────────────────────────────────────
+# --- Send Verification Email ---
 
 def send_verification_email(to_email: str, name: str, token: str) -> bool:
     """
@@ -169,7 +137,6 @@ def send_verification_email(to_email: str, name: str, token: str) -> bool:
 
     verify_link = f"{base_url}/verify-email?token={token}"
 
-    # ── Build MIME message ──
     msg = MIMEMultipart("alternative")
     msg["Subject"] = "Verify your ACRIS account"
     msg["From"]    = f"ACRIS <{sender}>"
@@ -270,7 +237,6 @@ def send_verification_email(to_email: str, name: str, token: str) -> bool:
     msg.attach(MIMEText(plain_body, "plain"))
     msg.attach(MIMEText(html_body,  "html"))
 
-    # ── Send via Gmail SMTP ──
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
             server.login(sender, password)
