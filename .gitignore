@@ -7,3 +7,4 @@ uvicorn.log
 uploads/
 acris.db
 .vscode/
+main.py.backup

@@ -32,3 +32,6 @@ spacy>=3.8.0
 
 # ── HTTP Requests (SerpAPI scraper) ────────────────────────
 requests==2.32.2
+
+# ── Scheduler ──────────────────────────────────────────────
+apscheduler==3.10.4
